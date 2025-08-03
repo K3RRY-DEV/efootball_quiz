@@ -3,7 +3,7 @@ export const quizData = [
     question: "What company developed the eFootball video game?",
     options: ["EA Sports", "Konami", "Ubisoft", "Activision"],
     answer: "Konami",
-    category: "General",
+    category: "All",
     difficulty: "Easy"
   },
   {
@@ -17,7 +17,7 @@ export const quizData = [
     question: " Which of the above is not a playing style in efootball?",
     options: ["Advanced striker", "Dummy runner", "Fox in the box", "False 9"],
     answer: "Player",
-    category: "History",
+    category: "Player",
     difficulty: "SuperStar"
   },
   {

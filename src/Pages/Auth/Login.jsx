@@ -25,7 +25,7 @@ const Login = () => {
     const user = getCurrentUser();
     if (user) {
       // User is already logged in, redirect away
-      navigate('/questionsetup', { replace: true });
+      navigate('/quiz', { replace: true });
     }
   }, []);
 
@@ -64,7 +64,7 @@ const Login = () => {
         // wait for toast to show then navigate & hide loader
         setTimeout(() => {
           hideLoader();
-          navigate('/questionSetup');
+          navigate('/quiz');
         }, 1500); // 1.5 seconds delay
       } else {
         toast.error(

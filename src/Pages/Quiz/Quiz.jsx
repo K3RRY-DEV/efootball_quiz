@@ -1,131 +1,184 @@
 import './quiz.css';
-import ResultScreen from '../Result/ResultScreen';
-import { useState } from 'react';
-import { quizData } from '../../utils/quizData';
+import { useState, useEffect } from 'react';
 
-const Quiz = ({filteredQuestions, category}) => {
+const Quiz = ({ filteredQuestions, category, difficulty, onFinish }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [selectedOption, setSelectedOption] = useState('');
+  const [selectedOption, setSelectedOption] = useState(null);
   const [score, setScore] = useState(0);
-  const [showAnswer, setShowAnswer] = useState(null);
   const [hasAnswered, setHasAnswered] = useState(false);
 
   const totalQuestions = filteredQuestions.length;
-  console.log('filteredQuestions:', totalQuestions);
 
+  useEffect(() => {
+    setSelectedOption(null);
+    setHasAnswered(false);
+  }, [currentQuestionIndex]);
 
-  if(currentQuestionIndex >= totalQuestions) {
-    return <ResultScreen score={score} totalQuestions={totalQuestions} />
+  // When quiz ends, call onFinish callback with final score
+  useEffect(() => {
+    if (currentQuestionIndex >= totalQuestions && onFinish) {
+      onFinish(score);
+    }
+  }, [currentQuestionIndex, totalQuestions, onFinish, score]);
+
+  if (currentQuestionIndex >= totalQuestions) {
+    // Don't render anything because parent will show ResultScreen
+    return null;
   }
 
-   const quizQuestions = filteredQuestions[currentQuestionIndex].question;
-   const option = filteredQuestions[currentQuestionIndex].options;
-  const answer = filteredQuestions[currentQuestionIndex].answer;
+  const { question, options, answer, image } = filteredQuestions[currentQuestionIndex];
 
-  const displayOptions = option.map((option, index) => (
-  <span
-    key={index}
-    onClick={() => userSelection(option)}
-    className="bg-sky-700 hover:bg-sky-600 active:bg-sky-800 text-sky-100 w-[200px] text-center p-3 rounded-2xl cursor-pointer transition duration-300 select-none shadow-md"
-  >
-    {option}
-  </span>
-));
-
-
-  const userSelection = (option) => {
+  const handleSelect = (option) => {
+    if (hasAnswered) return;
     setSelectedOption(option);
     setHasAnswered(true);
-
-    if(option === answer) {
-      setScore((prev) => prev + 1)
-    };
+    if (option === answer) setScore((s) => s + 1);
   };
 
-  const nextBtn = () => {
-    setCurrentQuestionIndex((prev) => prev + 1);
-    setSelectedOption('');
-    setHasAnswered(false);
+  const handleNext = () => {
+    setCurrentQuestionIndex((i) => i + 1);
+  };
+
+  const getOptionStyles = (option) => {
+    if (!hasAnswered) {
+      return "bg-white/10 backdrop-blur-md border border-transparent hover:border-cyan-400 cursor-pointer text-white";
+    }
+    if (option === answer) {
+      return "bg-green-600 text-white border-green-400 shadow-lg scale-105 cursor-default";
+    }
+    if (option === selectedOption && option !== answer) {
+      return "bg-red-600 text-white border-red-400 shadow-lg cursor-default";
+    }
+    return "bg-white/10 border-transparent text-white/70 cursor-default";
   };
 
   return (
-    <section className="h-screen p-10 flex flex-col justify-between"
-  style={{
-    background:
-      "linear-gradient(120deg, #000000, #0b1d3a, #000000)",
-    backgroundRepeat: "no-repeat",
-  }}
->
-  {/* PROGRESS, TIMER, DIFFICULTY */}
-  <div className="flex justify-between text-lg sm:text-2xl font-semibold tracking-wide text-cyan-400">
-    <span>{score} of {totalQuestions}</span>
-    <span>00:00</span>
-    <span>Easy</span>
-  </div>
+    <section
+      className="flex flex-col justify-between max-w-3xl mx-auto min-h-screen p-6 sm:p-8 select-none"
+      style={{
+        background: 'linear-gradient(120deg, #000000, #0b1d3a, #000000)',
+        color: 'white',
+      }}
+    >
+      {/* Progress + Category + Score */}
+      <header className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4 sm:gap-0">
+        <div className="flex items-center gap-3">
+          <div className="text-sm sm:text-base text-cyan-400 font-medium tracking-wide">
+            Q {currentQuestionIndex + 1} / {totalQuestions}
+          </div>
+          <div
+            className="relative w-10 h-10 rounded-full border-2 border-cyan-500 flex items-center justify-center font-semibold text-xs sm:text-sm"
+            aria-label="Progress Circle"
+          >
+            <svg
+              className="absolute top-0 left-0 w-10 h-10"
+              viewBox="0 0 36 36"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3"
+            >
+              <circle
+                cx="18"
+                cy="18"
+                r="15"
+                stroke="currentColor"
+                strokeOpacity="0.2"
+                strokeWidth="3"
+              />
+              <circle
+                cx="18"
+                cy="18"
+                r="15"
+                stroke="cyan"
+                strokeDasharray="94.2"
+                strokeDashoffset={94.2 - (94.2 * (currentQuestionIndex + 1)) / totalQuestions}
+                strokeLinecap="round"
+                strokeWidth="3"
+                transform="rotate(-90 18 18)"
+              />
+            </svg>
+            <span className="relative text-cyan-400 select-none">
+              {Math.round(((currentQuestionIndex + 1) / totalQuestions) * 100)}%
+            </span>
+          </div>
+        </div>
 
-  {/* CATEGORY */}
-  <div className="mb-6">
-    <h1 className="text-3xl sm:text-4xl font-bold text-center sm:text-left tracking-tight text-sky-300">
-      {category}
-    </h1>
-  </div>
+        <div className="text-lg sm:text-xl font-semibold tracking-wide text-center sm:text-left truncate max-w-[150px] sm:max-w-none">
+          {category || 'Category'}
+        </div>
 
-  {/* QUESTIONS AND IMAGE */}
-  <div className="bg-[#0f204b] rounded-xl p-6 flex flex-col items-center gap-10 shadow-lg max-w-4xl mx-auto">
-    
-    {/* Image placeholder */}
-    <div className="w-full max-w-md h-48 bg-sky-700 rounded-lg flex items-center justify-center text-white font-semibold text-xl">
-      Image
-    </div>
-    
-    {/* Question */}
-    <h2 className="text-xl sm:text-2xl font-semibold text-center px-4 text-sky-200">
-      {quizQuestions}
-    </h2>
+        <div className="text-lg sm:text-xl font-semibold tracking-wide text-cyan-400">
+          Score: {score}
+        </div>
+      </header>
 
-    {/* Options grid */}
-    <div className="bg-[#162b67] rounded-lg p-4 w-full max-w-4xl
-          grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6
-          justify-items-center text-sky-300">
-      {displayOptions}
-    </div>
-  </div>
-
-  {/* NEXT QUESTION BUTTON */}
-  <div className="flex justify-center mt-6">
-    {hasAnswered && (
-      <button
-        onClick={() => nextBtn()}
-        className="flex items-center gap-3 bg-cyan-600 hover:bg-cyan-700
-      text-white font-semibold text-lg rounded-full px-8 py-3 shadow-md
-      transition duration-300 active:scale-95"
+      {/* Question card */}
+      <article
+        className="bg-white/10 backdrop-blur-md rounded-3xl shadow-xl p-6 sm:p-10 flex flex-col gap-8"
+        style={{ minHeight: '360px' }}
       >
-        <span>Next</span>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 74 74"
-          height="28"
-          width="28"
-          stroke="currentColor"
-          strokeWidth="3"
-          className="text-white next-btn"
-        >
-          <circle
-            r="35.5"
-            cy="37"
-            cx="37"
-            className="stroke-current"
-          ></circle>
-          <path
-            fill="currentColor"
-            d="M25 35.5C24.1716 35.5 23.5 36.1716 23.5 37C23.5 37.8284 24.1716 38.5 25 38.5V35.5ZM49.0607 38.0607C49.6464 37.4749 49.6464 36.5251 49.0607 35.9393L39.5147 26.3934C38.9289 25.8076 37.9792 25.8076 37.3934 26.3934C36.8076 26.9792 36.8076 27.9289 37.3934 28.5147L45.8787 37L37.3934 45.4853C36.8076 46.0711 36.8076 47.0208 37.3934 47.6066C37.9792 48.1924 38.9289 48.1924 39.5147 47.6066L49.0607 38.0607ZM25 38.5L48 38.5V35.5L25 35.5V38.5Z"
-          ></path>
-        </svg>
-      </button>
-    )}
-  </div>
-   </section>
+        {/* Optional image */}
+        {image && (
+          <div className="w-full max-h-48 rounded-lg overflow-hidden mb-4 shadow-lg self-center">
+            <img
+              src={image}
+              alt="Question visual"
+              className="object-contain w-full h-full"
+              loading="lazy"
+            />
+          </div>
+        )}
+
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-white drop-shadow-md leading-snug">
+          {question}
+        </h1>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          {options.map((option, i) => (
+            <button
+              key={i}
+              onClick={() => handleSelect(option)}
+              disabled={hasAnswered}
+              className={`rounded-xl px-5 py-3 text-base sm:text-lg font-semibold transition-transform duration-200
+                border-2 focus:outline-none focus:ring-4 focus:ring-cyan-500
+                ${getOptionStyles(option)}
+                ${!hasAnswered ? 'hover:scale-105' : ''}
+              `}
+              aria-pressed={selectedOption === option}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+      </article>
+
+      {/* Next Button */}
+      <div className="flex justify-center mt-8">
+        {hasAnswered && (
+          <button
+            onClick={handleNext}
+            className="inline-flex items-center gap-3 bg-gradient-to-tr from-cyan-600 to-blue-700
+              hover:from-cyan-500 hover:to-blue-600 active:scale-95
+              rounded-full px-10 py-3 text-white font-semibold text-lg shadow-lg
+              transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-cyan-400"
+            type="button"
+            aria-label="Next question"
+          >
+            Next
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2"
+              className="w-5 h-5"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        )}
+      </div>
+    </section>
   );
 };
 

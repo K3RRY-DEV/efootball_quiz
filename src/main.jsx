@@ -7,6 +7,7 @@ import Quiz from "./Pages/Quiz/Quiz.jsx";
 import QuestionSetup from "./Pages/QuestionSetUp/QuestionSetup.jsx";
 import Loader from "./components/Loader.jsx"
 import { LoaderProvider } from './Context/LoaderContext.jsx';
+import Leaderboard from './Pages/LeaderBoard/LeaderBoard.jsx';
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
