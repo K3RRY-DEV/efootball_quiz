@@ -11,14 +11,16 @@ const Quiz = ({filteredQuestions, category}) => {
   const [hasAnswered, setHasAnswered] = useState(false);
 
   const totalQuestions = filteredQuestions.length;
+  console.log('filteredQuestions:', totalQuestions);
+
 
   if(currentQuestionIndex >= totalQuestions) {
     return <ResultScreen score={score} totalQuestions={totalQuestions} />
   }
 
-  const quizQuestions = quizData[currentQuestionIndex].question;
-  const option = quizData[currentQuestionIndex].options;
-  const answer = quizData[currentQuestionIndex].answer;
+   const quizQuestions = filteredQuestions[currentQuestionIndex].question;
+   const option = filteredQuestions[currentQuestionIndex].options;
+  const answer = filteredQuestions[currentQuestionIndex].answer;
 
   const displayOptions = option.map((option, index) => (
   <span
@@ -107,7 +109,7 @@ const Quiz = ({filteredQuestions, category}) => {
           width="28"
           stroke="currentColor"
           strokeWidth="3"
-          className="text-white"
+          className="text-white next-btn"
         >
           <circle
             r="35.5"
@@ -124,7 +126,6 @@ const Quiz = ({filteredQuestions, category}) => {
     )}
   </div>
    </section>
-
   );
 };
 

@@ -5,3 +5,12 @@ body {
   background-repeat: no-repeat;
 }
 
+/*From Login.jsx*/
+@keyframes ping-slow {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+.animate-ping-slow {
+  animation: ping-slow 1.2s infinite;
+}

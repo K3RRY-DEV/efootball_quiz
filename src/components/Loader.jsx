@@ -1,4 +1,3 @@
-import { section } from 'framer-motion/client';
 import K3RRY_logo from '../Images/K3RRY.png'
 import efootball_logo from '../Images/efootball_logo.png';
 
@@ -11,7 +10,7 @@ const Loader = () => {
         <img
           src={K3RRY_logo}
           alt="K3RRY Logo"
-          className="absolute top-1/2 left-1/2 w-16 h-16 -translate-x-1/2 -translate-y-1/2 z-10"
+          className="absolute top-1/2 left-1/2 w-16 h-16 -translate-x-1/2 -translate-y-1/2 z-10 animate-pulse"
         />
       
         {/* Rotating container */}

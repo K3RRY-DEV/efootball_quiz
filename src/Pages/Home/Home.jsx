@@ -3,9 +3,25 @@ import { cardsData } from './Home.js';
 import efootball_logo from '../../Images/efootball_logo.png';
 import K3RRY_logo from '../../Images/K3RRY.png'
 import '../../index.css';
+import { useState } from 'react';
 
 const Home = () => {
+
+  const [loggedIn, setLoggedIn] = useState(() => {
+    return !!localStorage.getItem("currentUser");
+  });
+
   const navigate = useNavigate();
+
+  const logout = () => {
+  localStorage.removeItem("currentUser");
+  setLoggedIn(false);
+  // Optionally navigate home or somewhere else
+  navigate('/');
+};
+
+
+  
 
   return (
     <section>
@@ -32,20 +48,31 @@ const Home = () => {
       </p>
 
       <div className="flex gap-6">
+          {!loggedIn ? (
+        <>
+          <button
+            onClick={() => navigate('/auth/signup')}
+            className="px-6 py-3 rounded-xl bg-[#fff200] text-indigo-600 font-semibold hover:text-[#fff200] hover:bg-indigo-600 transition cursor-pointer"
+          >
+            Sign Up
+          </button>
+          <button
+            onClick={() => navigate('/auth/login')}
+            className="px-6 py-3 rounded-xl border border-white hover:bg-[#fff200] hover:font-semibold hover:border-0 hover:text-purple-800 transition cursor-pointer"
+          >
+            Log In
+          </button>
+        </>
+      ) : (
         <button
-          onClick={() => navigate('/auth/signup')}
-          className="px-6 py-3 rounded-xl bg-white text-purple-800 font-semibold hover:bg-purple-200 transition"
+          onClick={logout}
+          className="px-6 py-3 rounded-xl bg-red-600 text-white font-semibold hover:bg-red-700 transition cursor-pointer"
         >
-          Sign Up
+          Log Out
         </button>
-        <button
-          onClick={() => navigate('/auth/login')}
-          className="px-6 py-3 rounded-xl border border-white hover:bg-white hover:text-purple-800 transition"
-        >
-          Log In
-        </button>
-      </div>
-      </div>
+      )}
+          </div>
+          </div>
 
       {/* CARDS SECTION */}
     <div className="max-w-5xl mx-auto my-16 px-6">
@@ -57,8 +84,9 @@ const Home = () => {
         {cardsData.map(({ title, description, imageUrl }, i) => (
           <div
             key={i}
-            className="flex flex-col md:flex-row md:items-center bg-red-400 bg-opacity-10 backdrop-blur-md
-            rounded-xl shadow-md mb-16 last:mb-0 relative z-10"
+            className="flex flex-col md:flex-row md:items-center bg-white/5 backdrop-blur-md 
+              border border-white/10 rounded-xl shadow-[0_4px_30px_rgba(0,0,0,0.1)] 
+              mb-16 last:mb-0 relative z-10"
             style={{ padding: '1.5rem' }}
           >
             {/* Connector dot */}

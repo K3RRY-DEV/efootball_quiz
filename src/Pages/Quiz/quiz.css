@@ -1,5 +1,5 @@
 
-button {
+.next-btn {
   cursor: pointer;
   font-weight: 700;
   transition: all 0.2s;
@@ -12,20 +12,20 @@ button {
   font-size: 15px;
 }
 
-button:hover {
+.next-btn:hover {
   background: #c4e201;
 }
 
-button > svg {
+.next-btn > svg {
   width: 34px;
   margin-left: 10px;
   transition: transform 0.3s ease-in-out;
 }
 
-button:hover svg {
+.next-btn:hover svg {
   transform: translateX(5px);
 }
 
-button:active {
+.next-btn:active {
   transform: scale(0.95);
 }

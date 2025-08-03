@@ -22,6 +22,7 @@ const QuestionSetup = () => {
   return matchesCategory && matchesDifficulty;
 });
 
+
   const selectCat = (event, index) => {
     const selected = event.target.textContent;
     setActiveCategoryTab(index);
