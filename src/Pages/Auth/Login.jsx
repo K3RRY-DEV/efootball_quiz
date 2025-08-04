@@ -38,9 +38,9 @@ const Login = () => {
   // Here, your loginUser is sync, so simulate delay:
       await new Promise((resolve) => setTimeout(resolve, 500)); 
 
-      const success = loginUser(formData.email, formData.password);
+      const result = loginUser(formData);
 
-      if (success) {
+      if (result.success) {
         toast.success(
           <div className="flex items-center gap-3">
             <CheckCircle className="text-green-600 bg-green-100 rounded-full p-1 w-6 h-6 animate-ping-slow" />
