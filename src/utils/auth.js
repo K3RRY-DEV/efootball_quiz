@@ -1,67 +1,49 @@
-// Get users from localStorage or return empty array
-const getStoredUsers = () => {
-  return JSON.parse(localStorage.getItem("users")) || [];
-};
 
-// Get current user from localStorage
-export const getCurrentUser = () => {
-  return JSON.parse(localStorage.getItem("currentUser"));
-};
+const USERS_KEY = 'quizUsers';
+const CURRENT_USER_KEY = 'currentUser';
+const ADMIN_EMAIL = 'kerrygameshd@gmail.com'; // adjust this as needed
 
-// Logout function
-export const logoutUser = () => {
-  localStorage.removeItem("currentUser");
-};
-
-// Save users back to localStorage
-const saveUsers = (users) => {
-  localStorage.setItem("users", JSON.stringify(users));
-};
-
-// Sign up function
-export const signupUser = (newUser) => {
-  const users = getStoredUsers();
-
-  // Check if email already exists
-  const userExists = users.some((user) => user.email === newUser.email);
-
-  if (userExists) {
-    return { success: false, message: "Email already registered" };
+export function signupUser({ name, email, password, confirmPassword }) {
+  if (password !== confirmPassword) {
+    return { success: false, message: "Passwords do not match" };
   }
 
-  // Add new user with timestamp as ID
-  const userWithId = {
-    ...newUser,
-    id: Date.now(),
-  };
+  const existingUsers = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
 
-  users.push(userWithId);
-  saveUsers(users);
-
-  // Optionally set current user right after signup
-  localStorage.setItem("currentUser", JSON.stringify(userWithId));
-
-  return { success: true, user: userWithId };
-};
-
-// Login function
-export function loginUser(email, password) {
-  const users = getStoredUsers();
-
-  const foundUser = users.find(
-    (user) => user.email === email && user.password === password
-  );
-
-  if (foundUser) {
-    localStorage.setItem("currentUser", JSON.stringify(foundUser));
-    return true;
-  } else {
-    return false;
+  const emailExists = existingUsers.some(user => user.email === email);
+  if (emailExists) {
+    return { success: false, message: "Email already exists" };
   }
+
+  const newUser = { name, email, password };
+  localStorage.setItem(USERS_KEY, JSON.stringify([...existingUsers, newUser]));
+  return { success: true };
 }
 
-// Admin check function
-export const isAdmin = () => {
-  const currentUser = getCurrentUser();
-  return currentUser?.email === 'kerrygameshd@gmail.com'; // 🔁 Replace with your admin email
-};
+export function loginUser({ email, password }) {
+  const existingUsers = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+
+  const foundUser = existingUsers.find(user => user.email === email && user.password === password);
+  if (!foundUser) {
+    return { success: false, message: "Invalid email or password" };
+  }
+
+  localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(foundUser));
+  return { success: true };
+}
+
+export function getCurrentUser() {
+  const user = localStorage.getItem(CURRENT_USER_KEY);
+  return user ? JSON.parse(user) : null;
+}
+
+export function logoutUser() {
+  localStorage.removeItem(CURRENT_USER_KEY);
+}
+
+export function isAdmin() {
+  const user = getCurrentUser();
+  return user && user.email === ADMIN_EMAIL;
+}
+
+// localStorage.removeItem("currentUser");
