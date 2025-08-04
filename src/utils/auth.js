@@ -3,14 +3,15 @@ const getStoredUsers = () => {
   return JSON.parse(localStorage.getItem("users")) || [];
 };
 
+// Get current user from localStorage
 export const getCurrentUser = () => {
   return JSON.parse(localStorage.getItem("currentUser"));
 };
 
+// Logout function
 export const logoutUser = () => {
   localStorage.removeItem("currentUser");
 };
-
 
 // Save users back to localStorage
 const saveUsers = (users) => {
@@ -43,9 +44,9 @@ export const signupUser = (newUser) => {
   return { success: true, user: userWithId };
 };
 
-// login function
+// Login function
 export function loginUser(email, password) {
-  const users = JSON.parse(localStorage.getItem("users")) || [];
+  const users = getStoredUsers();
 
   const foundUser = users.find(
     (user) => user.email === email && user.password === password
@@ -58,3 +59,9 @@ export function loginUser(email, password) {
     return false;
   }
 }
+
+// Admin check function
+export const isAdmin = () => {
+  const currentUser = getCurrentUser();
+  return currentUser?.email === 'kerrygameshd@gmail.com'; // 🔁 Replace with your admin email
+};

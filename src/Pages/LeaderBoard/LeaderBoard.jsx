@@ -1,14 +1,20 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getCurrentUser } from '../../utils/auth';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 5;
 
 const Leaderboard = () => {
   const [scores, setScores] = useState([]);
   const [filter, setFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
+
   const currentUser = getCurrentUser();
+  const isAdmin = currentUser?.email === 'kerrygameshd@gmail.com'; // Use your real admin email
+
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedScores = JSON.parse(localStorage.getItem("quizScores")) || [];
@@ -44,7 +50,7 @@ const Leaderboard = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto min-h-screen p-6 text-white">
+    <section className="max-w-4xl mx-auto min-h-screen p-6 text-white">
       <div className="backdrop-blur-md rounded-md border border-white/20 p-6 bg-gradient-to-br from-black via-[#0b1d3a] to-black">
         <h2 className="text-3xl font-bold mb-4 text-center">🏆 Leaderboard</h2>
 
@@ -163,8 +169,39 @@ const Leaderboard = () => {
             </div>
           </>
         )}
+        <div className="gap-3 flex items-center justify-center">
+          <button
+            onClick={() => navigate('/quiz')}
+            className="mt-8 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-white font-semibold transition cursor-pointer"
+          >
+            Restart Quiz
+          </button>
+          <button
+            onClick={() => navigate('/')}
+            className="mt-8 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-white font-semibold transition cursor-pointer"
+          >
+            Home
+          </button>
+        </div>
       </div>
-    </div>
+      {isAdmin && (
+        <div className="mt-6 flex justify-center">
+          <button
+            onClick={() => {
+              if (confirm("Are you sure you want to reset the leaderboard? This cannot be undone.")) {
+                localStorage.removeItem("quizScores");
+                setScores([]);
+                setCurrentPage(1);
+              }
+            }}
+            className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition cursor-pointer"
+          >
+            Reset Leaderboard (Admin Only)
+          </button>
+        </div>
+      )}
+
+    </section>
   );
 };
 

@@ -160,7 +160,7 @@ const Quiz = ({ filteredQuestions, category, difficulty, onFinish }) => {
             className="inline-flex items-center gap-3 bg-gradient-to-tr from-cyan-600 to-blue-700
               hover:from-cyan-500 hover:to-blue-600 active:scale-95
               rounded-full px-10 py-3 text-white font-semibold text-lg shadow-lg
-              transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-cyan-400"
+              transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-cyan-400 cursor-pointer"
             type="button"
             aria-label="Next question"
           >

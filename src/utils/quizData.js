@@ -16,7 +16,7 @@ export const quizData = [
   {
     question: " Which of the above is not a playing style in efootball?",
     options: ["Advanced striker", "Dummy runner", "Fox in the box", "False 9"],
-    answer: "Player",
+    answer: "False 9",
     category: "Player",
     difficulty: "SuperStar"
   },

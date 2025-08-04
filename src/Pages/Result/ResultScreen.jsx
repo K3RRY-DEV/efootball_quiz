@@ -1,7 +1,12 @@
 import { useEffect } from 'react';
 import { getCurrentUser } from '../../utils/auth';
+import { useNavigate } from 'react-router-dom';
+
 
 const ResultScreen = ({ score, totalQuestions, category, difficulty, onRestart, image }) => {
+
+  const navigate = useNavigate();
+
   useEffect(() => {
     const user = getCurrentUser();
     if (!user) return;
@@ -59,12 +64,20 @@ const ResultScreen = ({ score, totalQuestions, category, difficulty, onRestart, 
           <p className="mt-4 text-xl font-bold text-yellow-300">{getRemark()}</p>
         </div>
 
-        <button
-          onClick={onRestart}
-          className="mt-8 px-6 py-3 bg-purple-700 hover:bg-purple-800 rounded-lg text-white font-semibold transition"
-        >
-          Restart Quiz
-        </button>
+        <div className="flex items-center justify-around">
+          <button
+            onClick={onRestart}
+            className="mt-8 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-white font-semibold transition cursor-pointer"
+          >
+            Restart Quiz
+          </button>
+          <button
+            onClick={() => navigate('/leaderboard')}
+            className="mt-8 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-white font-semibold transition cursor-pointer"
+          >
+            LeaderBoard
+          </button>
+        </div>
       </div>
     </section>
   );

@@ -64,12 +64,20 @@ const Home = () => {
           </button>
         </>
       ) : (
+        <>
         <button
           onClick={logout}
           className="px-6 py-3 rounded-xl bg-red-600 text-white font-semibold hover:bg-red-700 transition cursor-pointer"
         >
           Log Out
         </button>
+        <button
+          onClick={() => navigate('/quiz')}
+          className="px-6 py-3 rounded-xl bg-yellow-300 text-indigo-600 font-semibold hover:bg-yellow-400 transition cursor-pointer"
+        >
+          Back to Quiz
+        </button>
+        </>
       )}
           </div>
           </div>
